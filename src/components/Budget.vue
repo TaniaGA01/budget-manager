@@ -4,13 +4,21 @@ import Alert from './Alert.vue'
 
 const budget = ref<number>(0)
 const error = ref<string>('')
+
+const emit = defineEmits([
+    'define-budget'
+])
+
 const defineBudget = () =>{
-    if(budget.value <= 0){
+    if(budget.value <= 0 || Number.isNaN(budget.value)){
+        budget.value = 0
         error.value = 'Invalid budget value'
         setTimeout(() => {
             error.value = ''
         }, 3000);
+        return
     }
+    emit('define-budget', budget.value)
 }
 
 </script>
@@ -26,9 +34,11 @@ const defineBudget = () =>{
                 id="newBudget"
                 class="new-budget"
                 placeholder="Add your budget here"
-                type="number" name=""
+                type="number" 
+                name=""
                 min="0"
-                v-model="budget"
+                v-model.number="budget"
+                @click="budget === 0 ? budget = NaN : budget"
             >
             <button class="button"
                 type="submit" 
@@ -52,7 +62,7 @@ const defineBudget = () =>{
     gap: 1rem;
 }
 .budget-form{
-    width: 100%;
+    width: 50%;
 }
 .budget-form input[type="number"]{
     background-color: var(--gray-light);

@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Budget from './components/Budget.vue';
+import ControlBudgetVue from './components/ControlBudget.vue';
+
 const budget = ref<number>(0)
+
+const defineBudget = (quantity) => {
+  budget.value = quantity
+}
+
 </script>
 
 <template>
@@ -9,7 +16,12 @@ const budget = ref<number>(0)
     <header>
       <h1>Budget manager</h1>
       <div class="container-header container shadow">
-        <Budget/>
+        <Budget
+          v-if="budget === 0"
+          @define-budget="defineBudget"
+        />
+        <ControlBudgetVue v-else
+        />
       </div>
     </header>
   </div>
