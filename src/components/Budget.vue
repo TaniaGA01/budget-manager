@@ -72,31 +72,20 @@ const defineBudget = () =>{
     font-size: 2.2rem;
     text-align: center;
 }
-.budget-form button{
-    background-color: var(--violet);
-    border-radius: 0.5rem;
-    padding: 0.8rem;
-    border: none;
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-align: center;
-    color: var(--white);
-    transition: background-color 300ms ease;
-}
-.budget-form button:hover{
-    background-color: var(--violet-dark);
-    cursor: pointer;
-}
+
 .budget-form input[type="number"]::placeholder{
     color: var(--gray)
 }
-@media (max-width: 680px){
+@media (max-width: 768px){
     .define-budget-block{
         display: grid;
         justify-items: center;
     }
     .define-budget-block img{
         width: 80%;
+    }
+    .budget-form{
+        width: 100%;
     }
 }
 </style>

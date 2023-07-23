@@ -4,9 +4,11 @@ import Budget from './components/Budget.vue';
 import ControlBudgetVue from './components/ControlBudget.vue';
 
 const budget = ref<number>(0)
+const availableBudget = ref<number>(0)
 
-const defineBudget = (quantity) => {
+const defineBudget = (quantity: number) => {
   budget.value = quantity
+  availableBudget.value = quantity
 }
 
 </script>
@@ -20,7 +22,10 @@ const defineBudget = (quantity) => {
           v-if="budget === 0"
           @define-budget="defineBudget"
         />
-        <ControlBudgetVue v-else
+        <ControlBudgetVue 
+          v-else
+          :budget="budget"
+          :availableBudget="availableBudget"
         />
       </div>
     </header>
@@ -36,7 +41,7 @@ const defineBudget = (quantity) => {
   --gray: #b8c1d3;
   --gray-light: #f5f7fa;
   --gray-dark: #64748b;
-  --black: #1e1e1e;
+  --black: #666672;
 }
 
 html{
@@ -55,6 +60,7 @@ body{
   font-family: 'Lato', sans-serif;
   background-color: var(--gray-light);
   color: var(--black);
+  font-weight: 400;
 }
 h1{
   font-size: 4rem;
@@ -90,6 +96,22 @@ header h1{
 .shadow{
   -webkit-box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1); 
   box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+}
+button{
+    background-color: var(--violet);
+    border-radius: 0.5rem;
+    padding: 0.8rem;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--white);
+    transition: background-color 300ms ease;
+    width: 100%;
+}
+button:hover{
+    background-color: var(--violet-dark);
+    cursor: pointer;
 }
   
 </style>
