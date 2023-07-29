@@ -62,18 +62,6 @@ const defineBudget = () =>{
     display: grid;
     gap: 1rem;
     width: 50%;
-
-    input[type="number"]{
-        background-color: var(--gray-light);
-        border-radius: 0.5rem;
-        padding: 1rem;
-        border: none;
-        font-size: 2.2rem;
-        text-align: center;
-    }
-    input[type="number"]::placeholder{
-        color: var(--gray)
-    }
 }
 
 @media (max-width: 768px){
