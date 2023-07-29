@@ -47,42 +47,43 @@ const defineBudget = () =>{
     </div>
     
 </template>
-<style scoped>
+<style lang="scss" scoped>
 .define-budget-block{
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5rem;
-}
-.define-budget-block img{
-    width: 50%;
+
+    img{
+        width: 50%;
+    }
 }
 .budget-form{
     display: grid;
     gap: 1rem;
-}
-.budget-form{
     width: 50%;
-}
-.budget-form input[type="number"]{
-    background-color: var(--gray-light);
-    border-radius: 0.5rem;
-    padding: 1rem;
-    border: none;
-    font-size: 2.2rem;
-    text-align: center;
+
+    input[type="number"]{
+        background-color: var(--gray-light);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        border: none;
+        font-size: 2.2rem;
+        text-align: center;
+    }
+    input[type="number"]::placeholder{
+        color: var(--gray)
+    }
 }
 
-.budget-form input[type="number"]::placeholder{
-    color: var(--gray)
-}
 @media (max-width: 768px){
     .define-budget-block{
         display: grid;
         justify-items: center;
-    }
-    .define-budget-block img{
-        width: 80%;
+
+        img{
+            width: 80%;
+        }
     }
     .budget-form{
         width: 100%;

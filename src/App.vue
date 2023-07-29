@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import Budget from './components/Budget.vue';
 import ControlBudgetVue from './components/ControlBudget.vue';
+import newExpenseIcon from './assets/img/nuevo-gasto.svg'
 
 const budget = ref<number>(0)
 const availableBudget = ref<number>(0)
@@ -29,10 +30,15 @@ const defineBudget = (quantity: number) => {
         />
       </div>
     </header>
+    <main v-if="budget > 0">
+      <div class="create-expense">
+        <img :src="newExpenseIcon" alt="new expense icon">
+      </div>
+    </main>
   </div>
 </template>
 
-<style>
+<style lang="scss">
 :root {
   --blue: #5053cf;
   --violet: #a52f67;
@@ -71,15 +77,17 @@ h2{
 header{
   background-color: var(--blue);
   padding-top: 5rem;
+
+  h1{
+    padding: 3rem 0;
+    margin: 0;
+    color: var(--white);
+    text-align: center;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
 }
-header h1{
-  padding: 3rem 0;
-  margin: 0;
-  color: var(--white);
-  text-align: center;
-  font-weight: 900;
-  text-transform: uppercase;
-}
+
 .container{
   width: 90%;
   max-width: 80rem;
@@ -108,10 +116,23 @@ button{
     color: var(--white);
     transition: background-color 300ms ease;
     width: 100%;
+    
+    &:hover{
+      background-color: var(--violet-dark);
+      cursor: pointer;
+  }
 }
-button:hover{
-    background-color: var(--violet-dark);
-    cursor: pointer;
+
+.create-expense{
+  position: fixed;
+  bottom: 5rem;
+  right: 5rem;
+
+  img{
+    width: 5rem;
+    cursor:pointer
+  }
+  svg{}
 }
   
 </style>

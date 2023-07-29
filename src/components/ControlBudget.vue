@@ -58,7 +58,7 @@ const chartOptions = {
         </div>
     </div>
 </template>
-<style scoped>
+<style lang="scss" scoped>
 .col-2{
     display: flex;
     justify-content: center;
@@ -67,16 +67,18 @@ const chartOptions = {
 .graphic-container,
 .budget-container {
     width: 50%;
-}
-.budget-container p{
-    font-size: 2rem;
-}
-.budget-container span{
+
+    p{
+        font-size: 2rem;
+    }
+    span{
     text-transform: uppercase;
     color: var(--blue);
     font-weight: 700;
     margin-right: 0.8rem;
 }
+}
+
 #chart {
     padding: 0;
     width: 300px;
