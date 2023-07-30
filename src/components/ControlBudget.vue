@@ -13,7 +13,7 @@ defineEmits([
     'reset-app'
 ])
 
-const series = computed(() => [ Math.ceil((props.availableBudget * 100)/ props.budget) ]);
+const series = computed(() => [ Math.ceil(100 - (props.availableBudget * 100)/ props.budget) ]);
 
 var chartOptions = {
   chart: {
@@ -65,7 +65,7 @@ var chartOptions = {
   stroke: {
     lineCap: "round"
   },
-  labels: ["Progress"]
+  labels: ["Available budget progress"]
 };
 
 </script>
