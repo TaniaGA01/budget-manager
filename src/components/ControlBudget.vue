@@ -5,6 +5,7 @@ import { quantityFormat } from '../helpers/index'
 defineProps<{
     budget:number
     availableBudget:number
+    spentBudget:number
 }>()
 
 const series = [70]
@@ -54,7 +55,7 @@ const chartOptions = {
             <button class="reset-app">Reset App</button>
             <p><span>Budget:</span> {{ quantityFormat(budget) }}</p>
             <p><span>Available budget:</span> {{ quantityFormat(availableBudget) }}</p>
-            <p><span>Spent budget:</span>$0</p>
+            <p><span>Spent budget:</span>{{ quantityFormat(spentBudget) }}</p>
         </div>
     </div>
 </template>

@@ -7,11 +7,13 @@
     const error = ref<string>('')
 
     const props = defineProps<{
-        modal:IModal
-        categoryOptions:ICategoryOptions[]
-        name:String,
-        quantity:Number | String,
-        category:String
+        modal: IModal,
+        categoryOptions: ICategoryOptions[],
+        name: String,
+        quantity: Number | String,
+        category: String,
+        availableBudget: Number | String,
+        id: Number | String
     }>()
 
     const emit = defineEmits([
@@ -23,7 +25,7 @@
     ])
 
     const addExpense = () =>{
-        const {name, quantity, category} = props
+        const { name, quantity, category, availableBudget, id } = props
         if([name, quantity, category].includes('')){
             error.value = 'All fields are required'
             setTimeout(() => {
@@ -31,6 +33,8 @@
             }, 3000);
             return
         }
+        const oldQuantity = quantity
+        //Quantity validation
         if(quantity <= '0'){
             error.value = 'Quantity must be greater than 0'
             setTimeout(() => {
@@ -38,6 +42,30 @@
             }, 3000);
             return
         }
+
+        //Max budget validation
+        if(id){
+            //edit exiting expense
+            if(Number(quantity) > Number(oldQuantity) + Number(availableBudget) ){
+                if(quantity > availableBudget){
+                    error.value = 'You are exceeding the budget'
+                    setTimeout(() => {
+                        error.value = ''
+                    }, 3000);
+                    return
+                }
+            }
+
+        }else{
+            if(quantity > availableBudget){
+                error.value = 'You are exceeding the budget'
+                setTimeout(() => {
+                    error.value = ''
+                }, 3000);
+                return
+            }
+        }
+        
         emit('safe-expense')
     }
 
@@ -59,7 +87,7 @@
                 <form 
                     @submit.prevent="addExpense"
                 >
-                    <h2>Add expense</h2>
+                    <h2>{{ id ? "Edit expense" : "Add Expense" }}</h2>
                     <Alert v-if="error">{{ error }}</Alert>
                     <div class="field">
                         <label 
@@ -103,7 +131,7 @@
                     <div class="field">
                         <button class="button"
                             type="submit" 
-                        >Send</button>
+                        >{{ id ? "Edit expense" : "Send" }}</button>
                     </div>
                 </form>
         </div>
@@ -112,7 +140,7 @@
 </template>
 <style lang="scss" scoped>
 .modal{
-    position: absolute;
+    position: fixed;
     background-color: rgb(0 0 0 / 0.5);
     top:0;
     bottom: 0;

@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import Budget from './components/Budget.vue';
 import ControlBudgetVue from './components/ControlBudget.vue';
+import Expense from './components/expense.vue'
 import Modal from './components/Modal.vue'
 import { IModal, ICategoryOptions, IExpense } from './services/all.interfaces'
 import newExpenseIcon from './assets/img/nuevo-gasto.svg'
+import { idGenerator } from './helpers/index'
 
 let categoryOptions = ref<ICategoryOptions[]>([
     {id:0,text: 'Saving', value: 1},
@@ -22,15 +24,41 @@ const modal = reactive<IModal>({
 })
 
 const budget = ref<number>(0)
-
 const availableBudget = ref<number>(0)
+const spentBudget = ref<number>(0)
 
 const expense = reactive<IExpense>({
-  id: null,
+  id:'',
   name: '',
   quantity: 0,
   category: '',
   date: Date.now()
+})
+
+const allExpenses = ref<IExpense[]>([])
+
+const reinitializeExpense = () => {
+  Object.assign(expense, {
+    id:'',
+    name: '',
+    quantity: 0,
+    category: '',
+    date: Date.now()
+  })
+}
+
+watch(allExpenses, () => {
+  const totalExpenses = allExpenses.value.reduce((total, expense) => expense.quantity + total, 0)
+  spentBudget.value = totalExpenses
+  availableBudget.value = (budget.value - spentBudget.value)
+},{
+  deep:true //several values
+})
+
+watch(modal, () => {
+  if(!modal.show){
+    reinitializeExpense()
+  }
 })
 
 const defineBudget = (quantity: number) => {
@@ -53,7 +81,28 @@ const hideModal = ():void => {
 }
 
 const safeExpense = () => {
-  console.log('hola', expense)
+  if(expense.id){
+    //edit expense info
+    const { id } = expense
+    const i = allExpenses.value.findIndex((expense => expense.id === id))
+    allExpenses.value[i] = { ...expense }
+  }else{
+    const newExpense = {
+      ...expense,
+      id: idGenerator()
+    }
+    allExpenses.value.push(newExpense)
+  }
+  
+  hideModal()
+  reinitializeExpense()
+  
+}
+
+const getExpense = (id:string) => {
+  const editExpense = allExpenses.value.find(expense => expense.id === id)
+  Object.assign(expense, editExpense)
+  showModal()
 }
 </script>
 
@@ -61,7 +110,7 @@ const safeExpense = () => {
   <div>
     <header>
       <h1>Budget manager</h1>
-      <div class="container-header container shadow">
+      <div class="container shadow container-header">
         <Budget
           v-if="budget === 0"
           @define-budget="defineBudget"
@@ -70,14 +119,24 @@ const safeExpense = () => {
           v-else
           :budget="budget"
           :availableBudget="availableBudget"
+          :spentBudget="spentBudget"
         />
       </div>
     </header>
     <main v-if="budget > 0">
+      <div class="container shadow expenses-list">
+        <h2>{{ allExpenses.length !== 0 ? 'Your expenses' : 'There is not expenses' }}</h2>
+        <Expense 
+          v-for="expense in allExpenses"
+          :key="expense.id"
+          :expense="expense"
+          @get-expense="getExpense"
+        />
+      </div>
       <div class="create-expense">
         <img 
           :src="newExpenseIcon" 
-          alt="new expense icon"
+          alt="add new expense icon"
           @click="showModal"
           >
       </div>
@@ -87,6 +146,8 @@ const safeExpense = () => {
         @safe-expense="safeExpense"
         :categoryOptions="categoryOptions"
         :modal="modal"
+        :availableBudget="availableBudget"
+        :id="expense.id"
         v-model:name="expense.name"
         v-model:quantity="expense.quantity"
         v-model:category="expense.category"
@@ -124,6 +185,9 @@ body{
   background-color: var(--gray-light);
   color: var(--black);
   font-weight: 400;
+}
+main{
+  margin-bottom: 15rem;
 }
 h1{
   font-size: 4rem;
@@ -170,15 +234,15 @@ form{
       gap: 1rem;
   }
   input,select{
-      background-color: var(--gray-light);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      border: none;
-      font-size: 2rem;
-      text-align: center;
+    background-color: var(--gray-light);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: none;
+    font-size: 2rem;
+    text-align: center;
 
-      &::placeholder{
-        color: var(--gray)
+    &::placeholder{
+      color: var(--gray)
     }
   }
   select{
@@ -187,23 +251,28 @@ form{
 
 }
 button{
-    background-color: var(--violet);
-    border-radius: 0.5rem;
-    padding: 0.8rem;
-    border: none;
-    font-size: 1.8rem;
-    font-weight: 700;
-    text-align: center;
-    color: var(--white);
-    transition: background-color 300ms ease;
-    width: 100%;
-    
-    &:hover{
-      background-color: var(--violet-dark);
-      cursor: pointer;
+  background-color: var(--violet);
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+  border: none;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--white);
+  transition: background-color 300ms ease;
+  width: 100%;
+  
+  &:hover{
+    background-color: var(--violet-dark);
+    cursor: pointer;
   }
 }
-
+.expenses-list{
+  margin-top: 18rem;
+  h2{
+    font-weight: 900;
+  }
+}
 .create-expense{
   position: fixed;
   bottom: 5rem;

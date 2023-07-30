@@ -10,9 +10,15 @@ export interface ICategoryOptions {
 }
 
 export interface IExpense {
-    id:null,
+    id:string,
     name:string,
     quantity:number,
     category:string,
     date:number
+}
+
+export interface IIconsCollection  {
+    id:number,
+    name:string,
+    icon:any
 }
