@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref } from 'vue'
+    import { computed, ref } from 'vue'
     import Alert from './Alert.vue'
     import closeModal from '../assets/img/cerrar.svg'
     import { IModal,ICategoryOptions } from '../services/all.interfaces'
@@ -19,6 +19,7 @@
     const emit = defineEmits([
         'hide-modal',
         'safe-expense',
+        'delete-expense',
         'update:name',
         'update:quantity',
         'update:category'
@@ -68,6 +69,9 @@
         
         emit('safe-expense')
     }
+    const isEditing = computed(() => {
+        return props.id
+    })
 
 </script>
 <template>
@@ -128,10 +132,17 @@
                                 </option>
                         </select>
                     </div>
-                    <div class="field">
-                        <button class="button"
+                    <div class="buttons-container">
+                        <button class="simple-button"
+                            type="submit"
+                            @click="$emit('delete-expense')"
+                            v-if="isEditing" 
+                        >Delete expense
+                        </button>
+                        <button class="button button-primary"
                             type="submit" 
-                        >{{ id ? "Edit expense" : "Send" }}</button>
+                        >{{ id ? "Edit expense" : "Add Expense" }}
+                        </button>
                     </div>
                 </form>
         </div>

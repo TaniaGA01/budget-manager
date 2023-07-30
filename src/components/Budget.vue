@@ -40,7 +40,7 @@ const defineBudget = () =>{
                 v-model.number="budget"
                 @click="budget === 0 ? budget = NaN : budget"
             >
-            <button class="button"
+            <button class="button button-primary"
                 type="submit" 
             >Send</button>
         </form>

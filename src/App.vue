@@ -93,16 +93,21 @@ const safeExpense = () => {
     }
     allExpenses.value.push(newExpense)
   }
-  
   hideModal()
   reinitializeExpense()
-  
 }
 
 const getExpense = (id:string) => {
   const editExpense = allExpenses.value.find(expense => expense.id === id)
   Object.assign(expense, editExpense)
   showModal()
+}
+
+const deleteExpense = () => {
+  if(confirm('Delete expense?')){
+    allExpenses.value = allExpenses.value.filter(expenseState => expenseState.id !== expense.id)
+    hideModal()
+  }
 }
 </script>
 
@@ -144,6 +149,7 @@ const getExpense = (id:string) => {
         v-if="modal.show" 
         @hide-modal="hideModal"
         @safe-expense="safeExpense"
+        @delete-expense="deleteExpense"
         :categoryOptions="categoryOptions"
         :modal="modal"
         :availableBudget="availableBudget"
@@ -250,22 +256,46 @@ form{
   }
 
 }
-button{
-  background-color: var(--violet);
+.buttons-container{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2rem;
+}
+.button{
   border-radius: 0.5rem;
   padding: 0.8rem;
   border: none;
   font-size: 1.8rem;
   font-weight: 700;
   text-align: center;
-  color: var(--white);
   transition: background-color 300ms ease;
-  width: 100%;
-  
-  &:hover{
-    background-color: var(--violet-dark);
-    cursor: pointer;
+  color: var(--white);
+}
+.button-primary{
+    background-color: var(--violet);
+    &:hover{
+      background-color: var(--violet-dark);
+      cursor: pointer;
+    }
   }
+.button-secondary{
+  background-color: var(--blue);
+    &:hover{
+      background-color: var(--violet-dark);
+      cursor: pointer;
+    }
+}
+.simple-button{
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+
+    &:hover{
+      color: var(--violet);
+      cursor: pointer;
+    }
 }
 .expenses-list{
   margin-top: 18rem;

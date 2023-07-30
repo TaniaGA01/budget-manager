@@ -52,7 +52,7 @@ const chartOptions = {
             </div>
         </div>
         <div class="budget-container">
-            <button class="reset-app">Reset App</button>
+            <button class="button button-primary reset-app">Reset App</button>
             <p><span>Budget:</span> {{ quantityFormat(budget) }}</p>
             <p><span>Available budget:</span> {{ quantityFormat(availableBudget) }}</p>
             <p><span>Spent budget:</span>{{ quantityFormat(spentBudget) }}</p>
