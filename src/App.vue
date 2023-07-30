@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive, watch, computed, onMounted } from 'vue';
 import Budget from './components/Budget.vue';
 import ControlBudgetVue from './components/ControlBudget.vue';
+import Filters from './components/Filters.vue'
 import Expense from './components/expense.vue'
 import Modal from './components/Modal.vue'
 import { IModal, ICategoryOptions, IExpense } from './services/all.interfaces'
@@ -26,6 +27,7 @@ const modal = reactive<IModal>({
 const budget = ref<number>(0)
 const availableBudget = ref<number>(0)
 const spentBudget = ref<number>(0)
+const filter = ref<string>('')
 
 const expense = reactive<IExpense>({
   id:'',
@@ -47,10 +49,12 @@ const reinitializeExpense = () => {
   })
 }
 
-watch(allExpenses, () => {
+watch(allExpenses, () => { // for watch const data
   const totalExpenses = allExpenses.value.reduce((total, expense) => expense.quantity + total, 0)
   spentBudget.value = totalExpenses
   availableBudget.value = (budget.value - spentBudget.value)
+
+  localStorage.setItem('allExpenses', JSON.stringify(allExpenses.value))
 },{
   deep:true //several values
 })
@@ -60,6 +64,25 @@ watch(modal, () => {
     reinitializeExpense()
   }
 })
+//local storage
+watch(budget, () => {
+  localStorage.setItem('budget', budget.value.toString());
+})
+
+onMounted(() => {
+  const budgetStorage = localStorage.getItem('budget')
+  if(budgetStorage){
+    budget.value = Number(budgetStorage)
+    availableBudget.value = Number(budgetStorage)
+  }
+
+  const allExpensesStorages = localStorage.getItem('allExpenses')
+  if(allExpensesStorages){
+    allExpenses.value = JSON.parse(allExpensesStorages)
+  }
+  
+});
+//end local storage
 
 const defineBudget = (quantity: number) => {
   budget.value = quantity
@@ -109,6 +132,20 @@ const deleteExpense = () => {
     hideModal()
   }
 }
+
+const expensesFilters = computed(() => {
+  if(filter.value){
+    return allExpenses.value.filter(expense => expense.category === filter.value)
+  }
+  return allExpenses.value
+})
+
+const resetApp = () => {
+  if(confirm('Do you want to reinitialize your budget?')){
+    allExpenses.value = []
+    budget.value = 0
+  }
+}
 </script>
 
 <template>
@@ -125,14 +162,19 @@ const deleteExpense = () => {
           :budget="budget"
           :availableBudget="availableBudget"
           :spentBudget="spentBudget"
+          @reset-app="resetApp"
         />
       </div>
     </header>
     <main v-if="budget > 0">
       <div class="container shadow expenses-list">
+        <Filters
+        :categoryOptions="categoryOptions"
+        v-model:filter="filter"
+         />
         <h2>{{ allExpenses.length !== 0 ? 'Your expenses' : 'There is not expenses' }}</h2>
         <Expense 
-          v-for="expense in allExpenses"
+          v-for="expense in expensesFilters"
           :key="expense.id"
           :expense="expense"
           @get-expense="getExpense"

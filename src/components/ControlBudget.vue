@@ -1,47 +1,72 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import VueApexCharts from 'vue3-apexcharts'
 import { quantityFormat } from '../helpers/index'
 
-defineProps<{
+const props = defineProps<{
     budget:number
     availableBudget:number
     spentBudget:number
 }>()
 
-const series = [70]
+defineEmits([
+    'reset-app'
+])
 
-const chartOptions = {
-    chart: {
-        height: 350,
-        type: 'radialBar',
-    },
-    plotOptions: {
-        radialBar: {
-            hollow: {       
-                size: '50%',
-            }
+const series = computed(() => [ Math.ceil((props.availableBudget * 100)/ props.budget) ]);
+
+var chartOptions = {
+  chart: {
+    height: 280,
+    type: "radialBar",
+  },
+
+//   series: [67],
+  colors: ["#a276f0"],
+  plotOptions: {
+    radialBar: {
+      hollow: {
+        margin: 0,
+        size: "70%",
+        background: "#2f2e5c"
+      },
+      track: {
+        dropShadow: {
+          enabled: true,
+          top: 2,
+          left: 0,
+          blur: 4,
+          opacity: 0.15
+        }
+      },
+      dataLabels: {
+        name: {
+          offsetY: -10,
+          color: "#fff",
+          fontSize: "13px"
         },
-    },
-    // labels: ['Cricket'],
-    fill: {
-          type: 'gradient',
-          gradient: {
-            shade: 'dark',
-            type: 'horizontal',
-            shadeIntensity: 0.5,
-            gradientToColors: ['#ABE5A1'],
-            inverseColors: true,
-            opacityFrom: 1,
-            opacityTo: 1,
-            stops: [0, 100]
-          }
-        },
-        stroke: {
-          lineCap: 'round'
-        },
-        labels: ['Percent']
-    
-}
+        value: {
+          color: "#fff",
+          fontSize: "30px",
+          show: true
+        }
+      }
+    }
+  },
+  fill: {
+    type: "gradient",
+    gradient: {
+      shade: "dark",
+      type: "vertical",
+      gradientToColors: ["#5053cf"],
+      stops: [0, 100]
+    }
+  },
+  stroke: {
+    lineCap: "round"
+  },
+  labels: ["Progress"]
+};
 
 </script>
 <template>
@@ -52,7 +77,11 @@ const chartOptions = {
             </div>
         </div>
         <div class="budget-container">
-            <button class="button button-primary reset-app">Reset App</button>
+            <button 
+                class="button button-primary reset-app"
+                type="button"
+                @click="$emit('reset-app')"
+                >Reset App</button>
             <p><span>Budget:</span> {{ quantityFormat(budget) }}</p>
             <p><span>Available budget:</span> {{ quantityFormat(availableBudget) }}</p>
             <p><span>Spent budget:</span>{{ quantityFormat(spentBudget) }}</p>
