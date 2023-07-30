@@ -108,12 +108,14 @@
                         <label 
                             for="quantity">Quantity:</label>
                         <input 
+                            id="quantity"
                             type="number" 
                             name="quantity" 
                             placeholder="Add expense quantity, e.g.: 300"
                             :value="quantity"
                             @input="$emit('update:quantity', +($event.target as HTMLInputElement).value)"
-                            id="">
+                            @click="quantity === 0 ? quantity = '' : quantity"
+                            >
                     </div>
                     <div class="field">
                         <label 
